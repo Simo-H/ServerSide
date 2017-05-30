@@ -9,16 +9,22 @@ var config = {
     password: 'simoSTAV1', // update me
     server: 'dbserverside.database.windows.net', // update me
     options: {
+        encrypt: true,
         database: 'ServerSide' //update me
+
     }
 }
-var connection = new Connection(config);
+exports.connectToDB = function  ()
+{
+    var connection = new Connection(config);
 
 // Attempt to connect and execute queries if connection goes through
-connection.on('connect', function(err) {
-    if (err) {
-        console.error('error connecting' +err.stack);
-        return;
-    }
-    console.error('Connected Azure');
-});
+    connection.on('connect', function(err) {
+        if (err) {
+            console.error('error connecting' +err.stack);
+            return;
+        }
+        console.error('Connected Azure');
+    });
+
+}
