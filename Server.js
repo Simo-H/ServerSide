@@ -16,9 +16,6 @@ var config = {
 
     }
 }
-
-
-
 exports.Select = function (query) {
     // Read all rows from table
 // Attempt to connect and execute queries if connection goes through
