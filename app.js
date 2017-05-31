@@ -4,7 +4,7 @@ var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
-
+var Promise = require('promise')
 var index = require('./routes/index');
 var users = require('./routes/users');
 
@@ -42,7 +42,8 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
-
+var query2 = "SELECT * FROM Movies";
 module.exports = app;
 var serverUtils = require('./Server');
-serverUtils.connectToDB();
+serverUtils.Select(query2).then(function (value) { console.log(value) }).catch(function (error) {  console.log(err)})
+//function (error,results) {    console.log(results);});
