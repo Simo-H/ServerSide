@@ -8,7 +8,7 @@ var bodyParser = require('body-parser');
 var Promise = require('promise')
 var index = require('./routes/index');
 var users = require('./routes/users');
-
+var movies=require('./routes/movies')
 var app = express();
 
 // view engine setup
@@ -23,7 +23,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
+
+
 app.use('/users', users);
+app.use('/movies',movies);
+app.use('/index',index);
 app.listen(8888);
 
 

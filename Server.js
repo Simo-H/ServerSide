@@ -102,3 +102,24 @@ exports.Delete = function (query) {
         });
     });
 }
+
+exports.Update = function (query) {
+    return new Promise(function (resolve, reject) {
+        var connection = new Connection(config);
+        connection.on('connect', function (err) {
+            if (err) {
+                reject(err.message);
+            }
+            var request = new Request(
+                query,
+                function (err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err.message);
+                        //return callback(err);
+                    }
+                });
+            connection.execSql(request);
+        });
+    });
+}
