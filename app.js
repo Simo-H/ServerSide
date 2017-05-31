@@ -22,16 +22,21 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', index);
+//app.use('/', index);
 app.use('/users', users);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
+    req.bo
   var err = new Error('Not Found');
   err.status = 404;
   next(err);
 });
 
+app.listen(8888);
+app.get('/',function (req,res) {
+    console.log("test");
+})
 // error handler
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development

@@ -16,7 +16,7 @@ var config = {
 
     }
 }
-var query = "SELECT * FROM Movies";
+
 var connection = new Connection(config);
 
 exports.Select = function (query) {
