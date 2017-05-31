@@ -17,15 +17,17 @@ var config = {
     }
 }
 
-var connection = new Connection(config);
+
 
 exports.Select = function (query) {
     // Read all rows from table
 // Attempt to connect and execute queries if connection goes through
     return new Promise(function (resolve, reject) {
+        var connection = new Connection(config);
         connection.on('connect', function (err) {
             if (err) {
                 reject(err.message);
+                connection.close();
             }
             var RS = [];
             var request = new Request(
@@ -34,10 +36,15 @@ exports.Select = function (query) {
                     if (err) {
                         console.log(err);
                         reject(err.message);
-                        //return callback(err);
+                        connection.close();
                     }
                     //callback(null,RS);
-                    resolve(RS);
+                    RSJSON = [];
+                    RS.forEach(function (x) {
+                        RSJSON.push(JSON.stringify(x));
+                    })
+                    resolve(RSJSON);
+                    connection.close();
                 });
             request.on('row', function (columns) {
                 var row = {};
@@ -54,4 +61,44 @@ exports.Select = function (query) {
         });
     });
 
+}
+exports.Insert = function (query) {
+    return new Promise(function (resolve, reject) {
+        var connection = new Connection(config);
+        connection.on('connect', function (err) {
+            if (err) {
+                reject(err.message);
+            }
+            var request = new Request(
+                query,
+                function (err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err.message);
+                        //return callback(err);
+                    }
+                });
+            connection.execSql(request);
+        });
+    });
+}
+exports.Delete = function (query) {
+    return new Promise(function (resolve, reject) {
+        var connection = new Connection(config);
+        connection.on('connect', function (err) {
+            if (err) {
+                reject(err.message);
+            }
+            var request = new Request(
+                query,
+                function (err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err.message);
+                        //return callback(err);
+                    }
+                });
+            connection.execSql(request);
+        });
+    });
 }
