@@ -3,9 +3,7 @@
  */
 var express = require('express');
 var router = express.Router();
-var path = require('path');
-var appDir = path.dirname(require.main.filename);
-var serverUtils = require('F:\\Apps\\Git Respository\\ServerSide\\Server');
+var serverUtils = require('../Server.js');
 /* GET home page. */
 
 router.get('/getAll', function (req, res) {
