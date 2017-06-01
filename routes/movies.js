@@ -13,8 +13,11 @@ router.get('/getAll', function (req, res) {
 });
 
 router.get('/movieID', function (req, res) {
-    var query = "SELECT Movies.detail FROM Movies WHERE Movies.movie_id Like"+ req.body.movie_id;
+    var query = "SELECT Movies.description FROM Movies WHERE Movies.movie_id="+req.headers['movie_id'];
+
     //res.send('hello world');
+
+
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
 });
 

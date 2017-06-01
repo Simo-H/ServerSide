@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 
-var path = require('get-root-path');
+
 var serverUtils = require('../Server.js');
 /* GET home page. */
 
