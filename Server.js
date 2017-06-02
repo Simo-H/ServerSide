@@ -161,3 +161,42 @@ exports.InsertMovie = function (query ,req) {
         });
     });
 }
+
+exports.InsertClient = function (query ,req) {
+    return new Promise(function (resolve, reject) {
+        var connection = new Connection(config);
+        connection.on('connect', function (err) {
+            if (err) {
+                reject(err.message);
+            }
+            var request = new Request(
+                query,
+                function (err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err.message);
+                        //return callback(err);
+                    }
+                    resolve({ message: 'Successfully insert' });
+
+                });
+
+            request.addParameter('client_id', TYPES.VarChar	,req.body['client_id'] );
+            request.addParameter('first_name', TYPES.NVarChar,req.body['first_name'] );
+            request.addParameter('last_name', TYPES.NVarChar,req.body['last_name'] );
+            request.addParameter('address', TYPES.NVarChar,req.body['address'] );
+            request.addParameter('city', TYPES.NVarChar,req.body['city'] );
+            request.addParameter('phone_number', TYPES.VarChar,req.body['phone_number'] );
+            request.addParameter('email_address', TYPES.NVarChar	,req.body['email_address'] );
+            request.addParameter('credit_card', TYPES.NVarChar,req.body['credit_card'] );
+            request.addParameter('security_answer', TYPES.NVarChar,req.body['security_answer'] );
+            request.addParameter('favourite_catergory', TYPES.NVarChar,req.body['favourite_catergory'] );
+            request.addParameter('password', TYPES.VarChar,req.body['password'] );
+            request.addParameter('country', TYPES.NVarChar,req.body['country'] );
+
+            connection.execSql(request);
+
+
+        });
+    });
+}
