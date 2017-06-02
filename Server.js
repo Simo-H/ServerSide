@@ -78,7 +78,6 @@ exports.Insert = function (query) {
                         //return callback(err);
                     }
                 });
-
             connection.execSql(request);
         });
     });
