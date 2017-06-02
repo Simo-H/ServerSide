@@ -15,12 +15,12 @@ router.get('/getAll', function (req, res) {
     serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
 });
 
-router.get('/movieID', function (req, res) {
-    var query = "SELECT Movies.description FROM Movies WHERE Movies.movie_id="+req.headers['movie_id'];
+router.get('/movieDescription', function (req, res) {
+    var query = "SELECT description FROM Movies WHERE Movies.movie_id="+req.query.movie_id;
     //res.send('hello world');
-    req.urlParse()
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
 });
+
 router.get('/bestFive', function (req,res) {
     var date = new Date();
     var currentDay = date.getDate();

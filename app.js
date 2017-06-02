@@ -8,7 +8,8 @@ var bodyParser = require('body-parser');
 var Promise = require('promise')
 var index = require('./routes/index');
 var clients = require('./routes/clients');
-var movies=require('./routes/movies')
+var movies=require('./routes/movies');
+var orders=require('./routes/orders');
 var app = express();
 
 // view engine setup
@@ -27,6 +28,7 @@ app.use('/', index);
 
 app.use('/clients', clients);
 app.use('/movies',movies);
+app.use('/orders',orders);
 app.use('/index',index);
 app.listen(8888);
 
