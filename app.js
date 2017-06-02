@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var Promise = require('promise')
 var index = require('./routes/index');
-var users = require('./routes/users');
+var clients = require('./routes/clients');
 var movies=require('./routes/movies')
 var app = express();
 
@@ -25,7 +25,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', index);
 
 
-app.use('/users', users);
+app.use('/clients', clients);
 app.use('/movies',movies);
 app.use('/index',index);
 app.listen(8888);
