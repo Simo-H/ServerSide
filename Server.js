@@ -200,3 +200,36 @@ exports.InsertClient = function (query ,req) {
         });
     });
 }
+
+exports.chackAmount = function (query ,req) {
+    return new Promise(function (resolve, reject) {
+        var connection = new Connection(config);
+        connection.on('connect', function (err) {
+            if (err) {
+                reject(err.message);
+            }
+            var request = new Request(
+                query,
+                function (err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err.message);
+                        //return callback(err);
+                    }
+                    resolve({ message: 'Successfully insert' });
+
+                });
+
+            request.addParameter('movie_id', TYPES.Int	,req.body['movie_id'] );
+            request.addParameter('name', TYPES.VarChar,req.body['name'] );
+            request.addParameter('quantity_in_stock', TYPES.Int,req.body['quantity_in_stock'] );
+            request.addParameter('description', TYPES.Text,req.body['description'] );
+            request.addParameter('added_date', TYPES.DateTime2,req.body['added_date'] );
+            request.addParameter('category', TYPES.VarChar,req.body['category'] );
+
+            connection.execSql(request);
+
+
+        });
+    });
+}
