@@ -257,6 +257,7 @@ exports.Update = function (query) {
                         reject(err.message);
                         //return callback(err);
                     }
+                    resolve({ message: 'Successfully updated' });
                 });
             connection.execSql(request);
         });

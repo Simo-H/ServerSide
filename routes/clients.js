@@ -28,4 +28,9 @@ router.post('/addClient', function (req, res) {
 
     serverUtils.InsertClient(query, req).then(function (value) {res.send(value);}).catch(function (error) {console.log(err)})
 });
+
+router.get('/getClientDetails', function (req, res) {
+    var query= "SELECT * FROM Clients WHERE client_id = '"+ req.query.client_id+"'";
+    serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
+});
 module.exports = router;

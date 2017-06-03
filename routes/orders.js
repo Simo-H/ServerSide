@@ -55,5 +55,8 @@ router.post('/addOrder', function (req, res) {
 //     serverUtils.InsertClient(query, req).then(function (value) {res.send(value);}).catch(function (error) {console.log(err)})
 // });
 
-
+router.get('/ordersReport', function (req, res) {
+    var query= "SELECT * FROM Orders"
+    serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) { res.send(error); console.log(err)})
+});
 module.exports = router;

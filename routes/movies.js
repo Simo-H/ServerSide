@@ -11,6 +11,19 @@ var dateFormat = require('dateformat');
 
 router.get('/getAll', function (req, res) {
     var query = "SELECT * FROM Movies";
+router.get('/getMovies', function (req, res) {
+    var query2 = "SELECT movie_id, name, description, added_date, category FROM Movies";
+    //res.send('hello world');
+    serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
+});
+    router.get('/getMovies', function (req, res) {
+        var query2 = "SELECT movie_id, name, description, added_date, category FROM Movies";
+        //res.send('hello world');
+        serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
+    });
+
+router.get('/moviesReport', function (req, res) {
+    var query2 = "SELECT * FROM Movies";
     //res.send('hello world');
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
 });
