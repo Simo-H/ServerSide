@@ -19,16 +19,18 @@ var config = {
 
     }
 }
-exports.checkQuantity = function (movie_id,quantity)
+exports.checkQuantity = function (movie_id,quantity,callback)
 {
 
         var query = "SELECT movie_id, quantity_in_stock FROM Movies WHERE movie_id="+movie_id+" AND quantity_in_stock>="+ quantity;
-        this.Select2(query,callback);
-        var a = callback;
+        this.Select2(query,function (b,results) {
+            var a = results;
             if(a.length > 0)
-                return true;
+                callback(true);
             else
-                return false;
+                callback(false);
+        });
+
 
 }
 

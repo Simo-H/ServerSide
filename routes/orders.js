@@ -22,7 +22,7 @@ router.post('/addOrder', function (req, res) {
     //     });
     // }
     for (var i = 0; i < req.body.movies.length; i++) {
-        serverUtils.checkQuantity(req.body.movies[i].movie_id, req.body.movies[i].quantity_for_sale).then(function (value) {
+        serverUtils.checkQuantity(req.body.movies[i].movie_id, req.body.movies[i].quantity_for_sale,function (value) {
             if (value) {
                 count++;
             }
