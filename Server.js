@@ -34,55 +34,6 @@ exports.checkQuantity = function (movie_id,quantity,callback)
 
 }
 
-this.checkQuantity2 = function (movie_id,quantity,callback) {
-    var query = "SELECT movie_id, quantity_in_stock FROM Movies WHERE movie_id="+movie_id+" AND quantity_in_stock>="+ quantity;
-
-    // Read all rows from table
-// Attempt to connect and execute queries if connection goes through
-    return new Promise(function (resolve, reject) {
-        var connection = new Connection(config);
-        connection.on('connect', function (err) {
-            if (err) {
-                reject(err.message);
-                connection.close();
-            }
-            var RS = [];
-            var request = new Request(
-                query,
-                function (err) {
-                    if (err) {
-                        console.log(err);
-                        reject(err.message);
-                        connection.close();
-                    }
-                    //callback(null,RS);
-                    RSJSON = [];
-                    RS.forEach(function (x) {
-                        RSJSON.push(JSON.stringify(x));
-                    })
-                    if(RSJSON.length>1)
-                    resolve(true);
-                    connection.close();
-                });
-            request.on('row', function (columns) {
-                var row = {};
-                columns.forEach(function (column) {
-                    if (column.isNull) {
-                        row[column.metadata.colName] = null;
-                    } else {
-                        row[column.metadata.colName] = column.value;
-                    }
-                });
-                RS.push(row);
-            });
-            connection.execSql(request);
-        });
-    });
-
-}
-
-
-
 exports.addNewOrderLine = function (movie_id,order_id,quantity,price_dollar)
 {
     var query = "INSERT INTO Order_Line (order_id, movie_id, quantity_for_sale,price_dollar) VALUES ("+order_id+","+ movie_id+", "+quantity_for_sale+","+price_dollar+")"
@@ -112,6 +63,7 @@ exports.addNewOrder= function (client_id, order_id, date_of_purchase, date_of_sh
     }).catch(function (error) {  console.log(err)});
 }
 
+//////////////////////////////////////////////////////
 this.Select2 = function (query,callback) {
     // Read all rows from table
 // Attempt to connect and execute queries if connection goes through
@@ -241,7 +193,6 @@ exports.Delete = function (query) {
         });
     });
 }
-
 exports.Update = function (query) {
     return new Promise(function (resolve, reject) {
         var connection = new Connection(config);
@@ -263,7 +214,6 @@ exports.Update = function (query) {
         });
     });
 }
-
 exports.InsertMovie = function (query ,req) {
     return new Promise(function (resolve, reject) {
         var connection = new Connection(config);
@@ -296,7 +246,6 @@ exports.InsertMovie = function (query ,req) {
         });
     });
 }
-
 exports.test = function () {
     return true;
 }
@@ -338,12 +287,6 @@ exports.InsertClient = function (query ,req) {
         });
     });
 }
-
-
-
-
-
-
 exports.InsertOrder = function (query ,req) {
     return new Promise(function (resolve, reject) {
         var connection = new Connection(config);
