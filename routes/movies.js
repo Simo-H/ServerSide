@@ -9,28 +9,20 @@ var TYPES = require('tedious').TYPES;
 var dateFormat = require('dateformat');
 /* GET home page. */
 
-router.get('/getAll', function (req, res) {
-    var query = "SELECT * FROM Movies";
 router.get('/getMovies', function (req, res) {
-    var query2 = "SELECT movie_id, name, description, added_date, category FROM Movies";
-    //res.send('hello world');
+    var query2 = "SELECT movie_id, name, description, price_dollars, added_date, category FROM Movies";
     serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
 });
-    router.get('/getMovies', function (req, res) {
-        var query2 = "SELECT movie_id, name, description, added_date, category FROM Movies";
-        //res.send('hello world');
-        serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
-    });
 
 router.get('/moviesReport', function (req, res) {
-    var query2 = "SELECT * FROM Movies";
-    //res.send('hello world');
-    serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
+    // var query2 = "SELECT * FROM Movies";
+    // serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
+    var a = serverUtils.test();
+    console.log(a);
 });
 
 router.get('/movieDescription', function (req, res) {
     var query = "SELECT description FROM Movies WHERE Movies.movie_id="+req.query.movie_id;
-    //res.send('hello world');
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
 });
 
@@ -61,9 +53,16 @@ router.delete('/deleteMovie', function (req, res) {
 
 router.post('/addNewMovie', function (req, res) {
 
-    var query ="INSERT INTO Movies (movie_id , name, quantity_in_stock, description, added_date, category) VALUES (@movie_id , @name, @quantity_in_stock, @description, @added_date, @category)"
+    var query ="INSERT INTO Movies (movie_id , name, quantity_in_stock, description, added_date, category, price_dollars) VALUES (@movie_id , @name, @quantity_in_stock, @description, @added_date, @category, @price_dollars)"
 
     serverUtils.InsertMovie(query, req).then(function (value) {res.send(value);}).catch(function (error) {console.log(err)})
+});
+
+router.put('/updateMovieQuantity', function (req, res) {
+
+    var query ="UPDATE Movies SET quantity_in_stock = quantity_in_stock + "+ req.query.quantity +" WHERE movie_id = "+req.query.movie_id;
+
+    serverUtils.Update(query, req).then(function (value) {res.send(value);}).catch(function (error) {console.log(err)})
 });
 
 module.exports = router;

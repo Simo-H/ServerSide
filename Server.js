@@ -19,17 +19,17 @@ var config = {
 
     }
 }
-exports.checkQuantity = function (movie_id,quantity,callback)
+exports.checkQuantity = function (movie_id,quantity)
 {
-    return new Promise(function (resolve,reject) {
+
         var query = "SELECT movie_id, quantity_in_stock FROM Movies WHERE movie_id="+movie_id+" AND quantity_in_stock>="+ quantity;
-        this.Select(query).then(function (value) {
-            if(value.length > 0)
-                resolve(true);
+        this.Select2(query,callback);
+        var a = callback;
+            if(a.length > 0)
+                return true;
             else
-                resolve(false);
-        });
-    })
+                return false;
+
 }
 
 this.checkQuantity2 = function (movie_id,quantity,callback) {
@@ -110,14 +110,14 @@ exports.addNewOrder= function (client_id, order_id, date_of_purchase, date_of_sh
     }).catch(function (error) {  console.log(err)});
 }
 
-this.Select = function (query) {
+this.Select2 = function (query,callback) {
     // Read all rows from table
 // Attempt to connect and execute queries if connection goes through
-    return new Promise(function (resolve, reject) {
+
         var connection = new Connection(config);
         connection.on('connect', function (err) {
             if (err) {
-                reject(err.message);
+                return(err.message);
                 connection.close();
             }
             var RS = [];
@@ -126,7 +126,7 @@ this.Select = function (query) {
                 function (err) {
                     if (err) {
                         console.log(err);
-                        reject(err.message);
+                        return(err.message);
                         connection.close();
                     }
                     //callback(null,RS);
@@ -134,8 +134,8 @@ this.Select = function (query) {
                     RS.forEach(function (x) {
                         RSJSON.push(JSON.stringify(x));
                     })
-                    resolve(RSJSON);
                     connection.close();
+                    callback(null,RSJSON);
                 });
             request.on('row', function (columns) {
                 var row = {};
@@ -150,8 +150,6 @@ this.Select = function (query) {
             });
             connection.execSql(request);
         });
-    });
-
 }
 exports.Select = function (query) {
     // Read all rows from table
@@ -289,7 +287,7 @@ exports.InsertMovie = function (query ,req) {
             request.addParameter('description', TYPES.Text,req.body['description'] );
             request.addParameter('added_date', TYPES.DateTime2,req.body['added_date'] );
             request.addParameter('category', TYPES.VarChar,req.body['category'] );
-
+            request.addParameter('price_dollars', TYPES.Money,req.body['price_dollars'] );
             connection.execSql(request);
 
 
@@ -297,6 +295,9 @@ exports.InsertMovie = function (query ,req) {
     });
 }
 
+exports.test = function () {
+    return true;
+}
 exports.InsertClient = function (query ,req) {
     return new Promise(function (resolve, reject) {
         var connection = new Connection(config);
