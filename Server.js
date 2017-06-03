@@ -19,6 +19,54 @@ var config = {
 
     }
 }
+exports.checkQuantity = function (movie_id,quantity)
+{
+    var query = "SELECT movie_id, quantity_in_stock FROM Movies WHERE movie_id="+movie_id+" AND quantity_in_stock>="+ quantity;
+    Select(query).then(function (value) {
+        if(value.length > 0)
+            return true;
+        else
+            return false;
+    }).catch(function (error) {  console.log(err)});
+}
+this.Select = function (query) {
+    var connection = new Connection(config);
+    connection.on('connect', function (err) {
+        if (err) {
+            reject(err.message);
+            connection.close();
+        }
+        var RS = [];
+        var request = new Request(
+            query,
+            function (err) {
+                if (err) {
+                    console.log(err);
+                    reject(err.message);
+                    connection.close();
+                }
+                //callback(null,RS);
+                RSJSON = [];
+                RS.forEach(function (x) {
+                    RSJSON.push(JSON.stringify(x));
+                })
+                resolve(RSJSON);
+                connection.close();
+            });
+        request.on('row', function (columns) {
+            var row = {};
+            columns.forEach(function (column) {
+                if (column.isNull) {
+                    row[column.metadata.colName] = null;
+                } else {
+                    row[column.metadata.colName] = column.value;
+                }
+            });
+            RS.push(row);
+        });
+        connection.execSql(request);
+    });
+}
 exports.Select = function (query) {
     // Read all rows from table
 // Attempt to connect and execute queries if connection goes through
