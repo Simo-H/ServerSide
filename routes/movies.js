@@ -10,9 +10,9 @@ var dateFormat = require('dateformat');
 /* GET home page. */
 
 router.get('/getAll', function (req, res) {
-    var query2 = "SELECT * FROM Movies";
+    var query = "SELECT * FROM Movies";
     //res.send('hello world');
-    serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
+    serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
 });
 
 router.get('/movieDescription', function (req, res) {
