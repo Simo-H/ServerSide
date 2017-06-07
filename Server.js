@@ -38,53 +38,52 @@ exports.checkQuantity = function (movie_id,quantity)
 
 }
 
-exports.addNewOrderLine = function (movie_id,order_id,quantity,price_dollar)
+exports.addNewOrderLine = function (order_id,movie_id,quantity_for_sale,price_dollar)
 {
     var query = "INSERT INTO Order_Line (order_id, movie_id, quantity_for_sale,price_dollar) VALUES ("+order_id+","+ movie_id+", "+quantity_for_sale+","+price_dollar+")"
 
-    insert(query).then(function (value) {
-
-    }).catch(function (error) {  console.log(err)});
+    return this.Insert(query);
 }
 
-exports.nextOrderId = function ()
+exports.nextOrderId = function (value)
 {
+        // var query = "SELECT order_id FROM Orders WHERE order_id=(SELECT max(order_id) FROM Orders)"
+        // var a = this.Select(query)
     return new Promise(function (resolve, reject) {
-        var query = "SELECT order_id FROM Orders WHERE order_id=(SELECT max(order_id) FROM Orders)"
-        this.Select(query).then(function (value) {
-            if (value.length > 0) {
-                a = value[0];
-                var b = JSON.parse(a);
-                var c = b.order_id;
-                resolve(c);
-            }
+                    if (value.length > 0) {
+                        var a = value[0];
+                        var b = JSON.parse(a);
+                        var c = b.order_id;
 
-            else
-                resolve(1);
-        }).catch(function (error) {
-            reject(error)
-            console.log(err)
-        });
-        });
-}
+                            resolve(c + 1);
+                    }
+                    else
+                            resolve(1);
 
-exports.addNewOrder= function (client_id, order_id, date_of_purchase, date_of_shipment,total_cost_dollar)
-{
-    return new Promise(function (resolve, reject) {
-        var query = "INSERT INTO Orders (client_id, order_id, date_of_purchase, date_of_shipment,total_cost_dollar) VALUES (" + client_id + "," + order_id + ", " + date_of_purchase + "," + date_of_shipment + "," + total_cost_dollar + ")"
-        resolve(Insert(query));
     });
+
+}
+
+exports.addNewOrder= function (client_id, order_id, date_of_purchase, date_of_shipment,total_cost_dollar,req)
+{
+        var query = "INSERT INTO Orders (client_id, order_id, date_of_purchase, date_of_shipment,total_cost_dollar) VALUES (" + client_id + "," + order_id + ", '" + date_of_purchase + "','" + date_of_shipment + "'," + total_cost_dollar + ")"
+        var a = this.Insert(query,req)
+        return a;
+
 }
 
 exports.Select = function (query) {
     // Read all rows from table
 // Attempt to connect and execute queries if connection goes through
+if(query == "SELECT order_id FROM Orders WHERE order_id=(SELECT max(order_id) FROM Orders)")
+    console.log("1")
     return new Promise(function (resolve, reject) {
+        console.log("2");
         var connection = new Connection(config);
         connection.on('connect', function (err) {
             if (err) {
                 reject(err.message);
-                connection.close();
+                // connection.close();
             }
             var RS = [];
             var request = new Request(
@@ -93,15 +92,10 @@ exports.Select = function (query) {
                     if (err) {
                         console.log(err);
                         reject(err.message);
-                        connection.close();
+                        // connection.close();
                     }
                     //callback(null,RS);
-                    RSJSON = [];
-                    RS.forEach(function (x) {
-                        RSJSON.push(JSON.stringify(x));
-                    })
-                    resolve(RSJSON);
-                    connection.close();
+                    //was here
                 });
             request.on('row', function (columns) {
                 var row = {};
@@ -114,6 +108,16 @@ exports.Select = function (query) {
                 });
                 RS.push(row);
             });
+            request.on('requestCompleted',function () {
+                RSJSON = [];
+                RS.forEach(function (x) {
+                    RSJSON.push(JSON.stringify(x));
+                })
+
+                console.log(3)
+                resolve(RSJSON);
+
+            })
             connection.execSql(request);
         });
     });
@@ -217,9 +221,7 @@ exports.InsertMovie = function (query ,req) {
         });
     });
 }
-exports.test = function () {
-    return true;
-}
+
 exports.InsertClient = function (query ,req) {
     return new Promise(function (resolve, reject) {
         var connection = new Connection(config);
@@ -284,6 +286,90 @@ exports.InsertOrder = function (query ,req) {
             connection.execSql(request);
 
 
+
+        });
+        request.on('requestCompleted',function () {
+           console.log("test")
+        })
+    });
+}
+exports.InsertOrderLine = function (query ,req) {
+    return new Promise(function (resolve, reject) {
+        var connection = new Connection(config);
+        connection.on('connect', function (err) {
+            if (err) {
+                reject(err.message);
+            }
+            var request = new Request(
+                query,
+                function (err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err.message);
+                        //return callback(err);
+                    }
+                    resolve({ message: 'Successfully insert' });
+
+                });
+
+            request.addParameter('order_id', TYPES.Int	,req.body['order_id'] );
+            request.addParameter('movie_id', TYPES.Int,req.body['movie_id'] );
+            request.addParameter('quantity_for_sale', TYPES.Int,req.body['quantity_for_sale'] );
+
+            connection.execSql(request);
+
+
+
+        });
+        request.on('requestCompleted',function () {
+            console.log("test")
+        })
+    });
+}
+exports.CheckForNextOrderID = function () {
+    // Read all rows from table
+// Attempt to connect and execute queries if connection goes through
+    var query = "SELECT order_id FROM Orders WHERE order_id=(SELECT max(order_id) FROM Orders)";
+    return new Promise(function (resolve, reject) {
+        var connection = new Connection(config);
+        connection.on('connect', function (err) {
+            if (err) {
+                reject(err.message);
+                // connection.close();
+            }
+            var RS = [];
+            var request = new Request(
+                query,
+                function (err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err.message);
+                        // connection.close();
+                    }
+                    //callback(null,RS);
+                    //was here
+                });
+            request.on('row', function (columns) {
+                var row = {};
+                columns.forEach(function (column) {
+                    if (column.isNull) {
+                        row[column.metadata.colName] = null;
+                    } else {
+                        row[column.metadata.colName] = column.value;
+                    }
+                });
+                RS.push(row);
+            });
+            request.on('requestCompleted',function () {
+                RSJSON = [];
+                RS.forEach(function (x) {
+                    RSJSON.push(JSON.stringify(x));
+                })
+                resolve(RSJSON);
+
+            })
+            connection.execSql(request);
         });
     });
+
 }

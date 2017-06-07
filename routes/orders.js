@@ -14,17 +14,21 @@ router.post('/addOrder', function (req, res) {
     for (var i = 0; i < req.body.movies.length; i++) {
         promisesArray.push(serverUtils.checkQuantity(req.body.movies[i].movie_id, req.body.movies[i].quantity_for_sale));
     }
-    Promise.all(promisesArray).then(function (value)
-    {
-        serverUtils.nextOrderId().then(function (value2)
-        {
-            serverUtils.addNewOrder(req.body.client_id,value2)
-                .then(function (value3) {for (var i = 0; i < req.body.movies.length; i++) {
-
-                }
-                });
+    Promise.all(promisesArray)
+        .then(serverUtils.CheckForNextOrderID)
+        .then(serverUtils.nextOrderId)
+        .then(function (value) {
+            count = value;
+            serverUtils.addNewOrder(req.body.client_id, value, req.body.date_of_purchase, req.body.date_of_shipment, req.body.total_cost_dollar, req)
+        })
+        .then(function () {
+            for (var i = 0; i < req.body.movies.length; i++)
+            {
+                serverUtils.addNewOrderLine(count,req.body.movies[i].movie_id,req.body.movies[i].quantity_for_sale,req.body.movies[i].price_dollar);
+                //update stocks
+            }
         });
-    });
+
 });
 
 
