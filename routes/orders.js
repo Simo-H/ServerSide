@@ -10,26 +10,21 @@ var dateFormat = require('dateformat');
 router.post('/addOrder', function (req, res) {
     var count = 0;
     var movie;
-
+    var promisesArray = []
     for (var i = 0; i < req.body.movies.length; i++) {
-        serverUtils.checkQuantity(req.body.movies[i].movie_id, req.body.movies[i].quantity_for_sale,function (value, function(value){
-
-        }) {
-            if (value) {
-                count++;
-            }
-            else {
-                movie.add(req.body.movies[i]);
-            }
-        });
-
+        promisesArray.push(serverUtils.checkQuantity(req.body.movies[i].movie_id, req.body.movies[i].quantity_for_sale));
     }
-    if(count==req.body.movies.length)
+    Promise.all(promisesArray).then(function (value)
     {
-        var id= serverUtils.nextOrderId();
-    }
+        serverUtils.nextOrderId().then(function (value2)
+        {
+            serverUtils.addNewOrder(req.body.client_id,value2)
+                .then(function (value3) {for (var i = 0; i < req.body.movies.length; i++) {
 
-
+                }
+                });
+        });
+    });
 });
 
 

@@ -15,10 +15,9 @@ router.get('/getMovies', function (req, res) {
 });
 
 router.get('/moviesReport', function (req, res) {
-    // var query2 = "SELECT * FROM Movies";
-    // serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
-    var a = serverUtils.test();
-    console.log(a);
+    var query2 = "SELECT * FROM Movies";
+    serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err)})
+
 });
 
 router.get('/movieDescription', function (req, res) {

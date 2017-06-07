@@ -19,17 +19,21 @@ var config = {
 
     }
 }
-exports.checkQuantity = function (movie_id,quantity,callback)
+exports.countAvailableMovies = function (value,count,movie,callback) {
+    if (value) {
+        count++;
+    }
+    else {
+        movie.add(req.body.movies[i]);
+    }
+}
+
+exports.checkQuantity = function (movie_id,quantity)
 {
 
         var query = "SELECT movie_id, quantity_in_stock FROM Movies WHERE movie_id="+movie_id+" AND quantity_in_stock>="+ quantity;
-        this.Select2(query,function (b,results) {
-            var a = results;
-            if(a.length > 0)
-                callback(true);
-            else
-                callback(false);
-        });
+        var a = this.Select(query);
+        return a;
 
 
 }
@@ -45,66 +49,33 @@ exports.addNewOrderLine = function (movie_id,order_id,quantity,price_dollar)
 
 exports.nextOrderId = function ()
 {
-    var query="SELECT order_id FROM Orders WHERE order_id=(SELECT max(order_id) FROM Orders)"
-    get(query).then(function (value) {
-        if(value.length > 0)
-            return value+1;
-        else
-            return 1;
-    }).catch(function (error) {  console.log(err)});
+    return new Promise(function (resolve, reject) {
+        var query = "SELECT order_id FROM Orders WHERE order_id=(SELECT max(order_id) FROM Orders)"
+        this.Select(query).then(function (value) {
+            if (value.length > 0) {
+                a = value[0];
+                var b = JSON.parse(a);
+                var c = b.order_id;
+                resolve(c);
+            }
+
+            else
+                resolve(1);
+        }).catch(function (error) {
+            reject(error)
+            console.log(err)
+        });
+        });
 }
 
 exports.addNewOrder= function (client_id, order_id, date_of_purchase, date_of_shipment,total_cost_dollar)
 {
-    var query = "INSERT INTO Orders (client_id, order_id, date_of_purchase, date_of_shipment,total_cost_dollar) VALUES ("+client_id+","+ order_id+", "+date_of_purchase+","+date_of_shipment +","+total_cost_dollar+")"
-
-    Insert(query).then(function (value) {
-
-    }).catch(function (error) {  console.log(err)});
+    return new Promise(function (resolve, reject) {
+        var query = "INSERT INTO Orders (client_id, order_id, date_of_purchase, date_of_shipment,total_cost_dollar) VALUES (" + client_id + "," + order_id + ", " + date_of_purchase + "," + date_of_shipment + "," + total_cost_dollar + ")"
+        resolve(Insert(query));
+    });
 }
 
-//////////////////////////////////////////////////////
-this.Select2 = function (query,callback) {
-    // Read all rows from table
-// Attempt to connect and execute queries if connection goes through
-
-        var connection = new Connection(config);
-        connection.on('connect', function (err) {
-            if (err) {
-                return(err.message);
-                connection.close();
-            }
-            var RS = [];
-            var request = new Request(
-                query,
-                function (err) {
-                    if (err) {
-                        console.log(err);
-                        return(err.message);
-                        connection.close();
-                    }
-                    //callback(null,RS);
-                    RSJSON = [];
-                    RS.forEach(function (x) {
-                        RSJSON.push(JSON.stringify(x));
-                    })
-                    connection.close();
-                    callback(null,RSJSON);
-                });
-            request.on('row', function (columns) {
-                var row = {};
-                columns.forEach(function (column) {
-                    if (column.isNull) {
-                        row[column.metadata.colName] = null;
-                    } else {
-                        row[column.metadata.colName] = column.value;
-                    }
-                });
-                RS.push(row);
-            });
-            connection.execSql(request);
-        });
-}
 exports.Select = function (query) {
     // Read all rows from table
 // Attempt to connect and execute queries if connection goes through
