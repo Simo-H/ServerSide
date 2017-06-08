@@ -19,16 +19,18 @@ router.post('/addOrder', function (req, res) {
         .then(serverUtils.nextOrderId)
         .then(function (value) {
             count = value;
-            serverUtils.addNewOrder(req.body.client_id, value, req.body.date_of_purchase, req.body.date_of_shipment, req.body.total_cost_dollar, req)
+            var a=serverUtils.addNewOrder(req.body.client_id, value, req.body.date_of_purchase, req.body.date_of_shipment, req.body.total_cost_dollar, req)
         })
         .then(function () {
+
             for (var i = 0; i < req.body.movies.length; i++)
             {
-                serverUtils.addNewOrderLine(count,req.body.movies[i].movie_id,req.body.movies[i].quantity_for_sale,req.body.movies[i].price_dollar);
-                //update stocks
-            }
-        });
+                serverUtils.addNewOrderLine(count,req.body.movies[i].movie_id,req.body.movies[i].quantity_for_sale,req.body.movies[i].price_dollar,req);
+               serverUtils.updateStock(req.body.movies[i].movie_id,req.body.movies[i].quantity_for_sale);
 
+            }
+        }).then(function (value) {res.send({message: 'Successfully ordered'});})
+    .catch(function (error) { res.send(error); console.log(err)})
 });
 
 

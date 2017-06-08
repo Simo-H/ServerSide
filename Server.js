@@ -31,18 +31,18 @@ exports.countAvailableMovies = function (value,count,movie,callback) {
 exports.checkQuantity = function (movie_id,quantity)
 {
 
-        var query = "SELECT movie_id, quantity_in_stock FROM Movies WHERE movie_id="+movie_id+" AND quantity_in_stock>="+ quantity;
-        var a = this.Select(query);
+        var query = "SELECT movie_id, quantity_in_stock FROM Movies WHERE movie_id="+movie_id+" AND quantity_in_stock <"+ quantity;
+        var a = this.SelectQ(query);
         return a;
 
 
 }
 
-exports.addNewOrderLine = function (order_id,movie_id,quantity_for_sale,price_dollar)
+exports.updateStock = function (movie_id,quantity_for_sale)
 {
-    var query = "INSERT INTO Order_Line (order_id, movie_id, quantity_for_sale,price_dollar) VALUES ("+order_id+","+ movie_id+", "+quantity_for_sale+","+price_dollar+")"
-
-    return this.Insert(query);
+    var query = "UPDATE Movies SET quantity_in_stock = (SELECT quantity_in_stock FROM Movies WHERE movie_id ="+movie_id+")-"+quantity_for_sale+"WHERE movie_id ="+movie_id
+    var a = this.Insert(query)
+    return a;
 }
 
 exports.nextOrderId = function (value)
@@ -62,6 +62,13 @@ exports.nextOrderId = function (value)
 
     });
 
+}
+
+exports.addNewOrderLine = function (order_id,movie_id,quantity_for_sale,price_dollar,req)
+{
+    var query = "INSERT INTO Order_Line (order_id, movie_id, quantity_for_sale,price_dollar) VALUES ("+order_id+","+ movie_id+", "+quantity_for_sale+",'"+price_dollar+"'"+")"
+    var a = this.InsertOrderLine(query,req)
+    return a;
 }
 
 exports.addNewOrder= function (client_id, order_id, date_of_purchase, date_of_shipment,total_cost_dollar,req)
@@ -114,7 +121,6 @@ if(query == "SELECT order_id FROM Orders WHERE order_id=(SELECT max(order_id) FR
                     RSJSON.push(JSON.stringify(x));
                 })
 
-                console.log(3)
                 resolve(RSJSON);
 
             })
@@ -124,6 +130,26 @@ if(query == "SELECT order_id FROM Orders WHERE order_id=(SELECT max(order_id) FR
 
 }
 exports.Insert = function (query) {
+    return new Promise(function (resolve, reject) {
+        var connection = new Connection(config);
+        connection.on('connect', function (err) {
+            if (err) {
+                reject(err.message);
+            }
+            var request = new Request(
+                query,
+                function (err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err.message);
+                        //return callback(err);
+                    }
+                });
+            connection.execSql(request);
+        });
+    });
+}
+exports.InsertOrderLine = function (query) {
     return new Promise(function (resolve, reject) {
         var connection = new Connection(config);
         connection.on('connect', function (err) {
@@ -260,72 +286,61 @@ exports.InsertClient = function (query ,req) {
         });
     });
 }
-exports.InsertOrder = function (query ,req) {
+
+exports.SelectQ = function (query) {
+    // Read all rows from table
+// Attempt to connect and execute queries if connection goes through
+
     return new Promise(function (resolve, reject) {
         var connection = new Connection(config);
         connection.on('connect', function (err) {
             if (err) {
                 reject(err.message);
+                // connection.close();
             }
+            var RS = [];
             var request = new Request(
                 query,
                 function (err) {
                     if (err) {
                         console.log(err);
                         reject(err.message);
-                        //return callback(err);
+                        // connection.close();
                     }
-                    resolve({ message: 'Successfully insert' });
-
+                    //callback(null,RS);
+                    //was here
                 });
-
-            request.addParameter('order_id', TYPES.Int	,req.body['order_id'] );
-            request.addParameter('movie_id', TYPES.Int,req.body['movie_id'] );
-            request.addParameter('quantity_for_sale', TYPES.Int,req.body['quantity_for_sale'] );
-
-            connection.execSql(request);
-
-
-
-        });
-        request.on('requestCompleted',function () {
-           console.log("test")
-        })
-    });
-}
-exports.InsertOrderLine = function (query ,req) {
-    return new Promise(function (resolve, reject) {
-        var connection = new Connection(config);
-        connection.on('connect', function (err) {
-            if (err) {
-                reject(err.message);
-            }
-            var request = new Request(
-                query,
-                function (err) {
-                    if (err) {
-                        console.log(err);
-                        reject(err.message);
-                        //return callback(err);
+            request.on('row', function (columns) {
+                var row = {};
+                columns.forEach(function (column) {
+                    if (column.isNull) {
+                        row[column.metadata.colName] = null;
+                    } else {
+                        row[column.metadata.colName] = column.value;
                     }
-                    resolve({ message: 'Successfully insert' });
-
                 });
+                RS.push(row);
+            });
+            request.on('requestCompleted',function () {
+                RSJSON = [];
 
-            request.addParameter('order_id', TYPES.Int	,req.body['order_id'] );
-            request.addParameter('movie_id', TYPES.Int,req.body['movie_id'] );
-            request.addParameter('quantity_for_sale', TYPES.Int,req.body['quantity_for_sale'] );
+                RS.forEach(function (x) {
+                    RSJSON.push(JSON.stringify(x));
+                })
 
+                if (RS.length==0){
+                    resolve({ message: 'Successfully order' });
+                }
+                else{
+                    reject(RSJSON);
+                }
+            })
             connection.execSql(request);
-
-
-
         });
-        request.on('requestCompleted',function () {
-            console.log("test")
-        })
     });
+
 }
+
 exports.CheckForNextOrderID = function () {
     // Read all rows from table
 // Attempt to connect and execute queries if connection goes through
@@ -372,4 +387,37 @@ exports.CheckForNextOrderID = function () {
         });
     });
 
+}
+
+exports.InsertMovie = function (query ,req) {
+    return new Promise(function (resolve, reject) {
+        var connection = new Connection(config);
+        connection.on('connect', function (err) {
+            if (err) {
+                reject(err.message);
+            }
+            var request = new Request(
+                query,
+                function (err) {
+                    if (err) {
+                        console.log(err);
+                        reject(err.message);
+                        //return callback(err);
+                    }
+                    resolve({ message: 'Successfully insert' });
+
+                });
+
+            request.addParameter('movie_id', TYPES.Int	,req.body['movie_id'] );
+            request.addParameter('name', TYPES.VarChar,req.body['name'] );
+            request.addParameter('quantity_in_stock', TYPES.Int,req.body['quantity_in_stock'] );
+            request.addParameter('description', TYPES.Text,req.body['description'] );
+            request.addParameter('added_date', TYPES.DateTime2,req.body['added_date'] );
+            request.addParameter('category', TYPES.VarChar,req.body['category'] );
+            request.addParameter('price_dollars', TYPES.Money,req.body['price_dollars'] );
+            connection.execSql(request);
+
+
+        });
+    });
 }
