@@ -38,4 +38,16 @@ router.get('/ordersReport', function (req, res) {
     var query= "SELECT * FROM Orders"
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) { res.send(error); console.log(err)})
 });
+
+router.get('/OrderDetails', function (req, res) {
+    var query = "SELECT Movies.name,Movies.movie_id,A.quantity_for_sale,A.price_dollar FROM Movies INNER JOIN (SELECT * FROM Order_Line WHERE Order_Line.order_id="+req.query.order_id+")as A ON Movies.movie_id=A.movie_id"
+    serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
+});
+
+router.get('/previousOrders', function (req, res) {
+    var query = "SELECT order_id,date_of_purchase,date_of_shipment,total_cost_dollar FROM Orders Where Orders.client_id="+req.query.client_id
+    serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
+});
+
+
 module.exports = router;

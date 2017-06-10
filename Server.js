@@ -194,6 +194,32 @@ exports.Delete = function (query) {
         });
     });
 }
+
+exports.Delete2 = function (query,callback) {
+        var connection = new Connection(config);
+        connection.on('connect', function (err) {
+            if (err) {
+                return(false,err.message);
+            }
+            var request = new Request(
+                query,
+                function (err) {
+                    if (err) {
+                        console.log(err);
+                        // return(false,err.message);
+                        callback(err);
+                    }
+                   return callback(true);
+
+                });
+
+            connection.execSql(request);
+
+
+        });
+
+}
+
 exports.Update = function (query) {
     return new Promise(function (resolve, reject) {
         var connection = new Connection(config);
