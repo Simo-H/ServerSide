@@ -259,7 +259,6 @@ exports.InsertMovie = function (query ,req) {
                     resolve({ message: 'Successfully insert' });
 
                 });
-
             request.addParameter('movie_id', TYPES.Int	,req.body['movie_id'] );
             request.addParameter('name', TYPES.VarChar,req.body['name'] );
             request.addParameter('quantity_in_stock', TYPES.Int,req.body['quantity_in_stock'] );
@@ -293,16 +292,18 @@ exports.InsertClient = function (query ,req) {
 
                 });
 
+
             request.addParameter('client_id', TYPES.VarChar	,req.body['client_id'] );
             request.addParameter('first_name', TYPES.NVarChar,req.body['first_name'] );
             request.addParameter('last_name', TYPES.NVarChar,req.body['last_name'] );
             request.addParameter('address', TYPES.NVarChar,req.body['address'] );
-            request.addParameter('city', TYPES.NVarChar,req.body['city'] );
-            request.addParameter('phone_number', TYPES.VarChar,req.body['phone_number'] );
+            request.addParameter('phone_number', TYPES.NVarChar,req.body['phone_number'] );
             request.addParameter('email_address', TYPES.NVarChar	,req.body['email_address'] );
             request.addParameter('credit_card', TYPES.NVarChar,req.body['credit_card'] );
             request.addParameter('security_answer', TYPES.NVarChar,req.body['security_answer'] );
             request.addParameter('favourite_catergory', TYPES.NVarChar,req.body['favourite_catergory'] );
+            request.addParameter('favourite_catergory2', TYPES.NVarChar,req.body['favourite_catergory2'] );
+            request.addParameter('username', TYPES.NVarChar,req.body['username'] );
             request.addParameter('password', TYPES.VarChar,req.body['password'] );
             request.addParameter('country', TYPES.NVarChar,req.body['country'] );
 

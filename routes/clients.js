@@ -10,7 +10,7 @@ var dateFormat = require('dateformat');
 /* GET home page. */
 
 router.post('/login', function (req, res) {
-    var query= "SELECT first_name, last_name FROM Clients WHERE email_address = '"+ req.body['email_address'] +"' AND password = '"+req.body['password']+"'";
+    var query= "SELECT first_name, last_name,username  FROM Clients WHERE username = '"+ req.body['username'] +"' AND password = '"+req.body['password']+"'";
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(error);res.send(error)})
 });
 
@@ -72,7 +72,7 @@ router.delete('/deleteClient', function (req, res) {
 
 router.post('/addClient', function (req, res) {
 
-    var query ="INSERT INTO Clients (client_id, first_name, last_name, address, city, phone_number, email_address, credit_card, security_answer, favourite_catergory, password, country) VALUES (@client_id, @first_name, @last_name, @address, @city, @phone_number, @email_address, @credit_card, @security_answer, @favourite_catergory, @password, @country)"
+    var query ="INSERT INTO Clients (client_id, first_name, last_name, address, phone_number, email_address, credit_card, security_answer, favourite_catergory, password, country, favourite_catergory2, username) VALUES (@client_id, @first_name, @last_name, @address, @phone_number, @email_address, @credit_card, @security_answer, @favourite_catergory, @password, @country, @favourite_catergory2, @username)"
 
     serverUtils.InsertClient(query, req).then(function (value) {res.send(value);}).catch(function (error) {console.log(error);res.send(error)})
 });
