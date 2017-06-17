@@ -13,6 +13,11 @@ router.get('/getMovies', function (req, res) {
     serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
 });
 
+router.get('/getNextMovies', function (req, res) {
+    var query = "WITH MyCte AS (SELECT *, RowNum = row_number() OVER (ORDER BY (SELECT 0)) FROM Movies WHERE category='"+req.query.category + "') SELECT TOP " +req.query.limit + " movie_id, name, price_dollars, added_date, category FROM MyCte WHERE RowNum >="+req.query.rownum;
+    serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
+});
+
 router.get('/moviesReport', function (req, res) {
     var query2 = "SELECT * FROM Movies";
     serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})

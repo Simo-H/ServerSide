@@ -118,10 +118,11 @@ if(query == "SELECT order_id FROM Orders WHERE order_id=(SELECT max(order_id) FR
             request.on('requestCompleted',function () {
                 RSJSON = [];
                 RS.forEach(function (x) {
-                    RSJSON.push(JSON.stringify(x));
+                    // RSJSON.push(JSON.stringify(x));
+                    RSJSON.push(x);
                 })
 
-                resolve(RSJSON);
+                resolve(RS);
 
             })
             connection.execSql(request);
