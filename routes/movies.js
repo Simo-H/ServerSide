@@ -9,12 +9,12 @@ var dateFormat = require('dateformat');
 /* GET home page. */
 
 router.get('/getMovies', function (req, res) {
-    var query2 = "SELECT movie_id, name, price_dollars, added_date, category FROM Movies";
+    var query2 = "SELECT movie_id, name, price_dollars, added_date, rank, category FROM Movies";
     serverUtils.Select(query2).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
 });
 
 router.get('/getNextMovies', function (req, res) {
-    var query = "WITH MyCte AS (SELECT *, RowNum = row_number() OVER (ORDER BY (SELECT 0)) FROM Movies WHERE category='"+req.query.category + "') SELECT TOP " +req.query.limit + " movie_id, name, price_dollars, added_date, category FROM MyCte WHERE RowNum >="+req.query.rownum;
+    var query = "WITH MyCte AS (SELECT movie_id, name, price_dollars, rank, added_date, category, RowNum = row_number() OVER (ORDER BY (SELECT 0)) FROM Movies WHERE category='"+req.query.category + "') SELECT TOP " +req.query.limit + " movie_id, name, price_dollars, added_date, category FROM MyCte WHERE RowNum >="+req.query.rownum;
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
 });
 
@@ -36,7 +36,7 @@ router.get('/bestFive', function (req,res) {
     weekAgoDate.setDate(currentDay - 31);
     var dateString = dateFormat(weekAgoDate,"yyyy-mm-dd");
    // var query = "Select * SUM (quantity_for_sale) AS total_for_sale FROM Order_Line WHERE order_id IN (Select order_id FROM orders WHERE date_of_purchase > Convert(datetime, '"+dateString+"' )) GROUP BY movie_id ORDER BY total_for_sale";
-    var query= "(SELECT TOP 5 Movies.movie_id,Movies.name,A.total_for_sale FROM Movies INNER JOIN (SELECT movie_id ,SUM (quantity_for_sale) AS total_for_sale FROM Order_Line WHERE order_id IN (Select order_id FROM orders WHERE date_of_purchase > Convert(datetime, '"+dateString+"' )) GROUP BY movie_id)as A ON Movies.movie_id=A.movie_id ) ORDER BY total_for_sale DESC";
+    var query= "(SELECT TOP 5 Movies.rank, Movies.added_date, Movies.movie_id, Movies.price_dollars Movies.name, A.total_for_sale FROM Movies INNER JOIN (SELECT movie_id ,SUM (quantity_for_sale) AS total_for_sale FROM Order_Line WHERE order_id IN (Select order_id FROM orders WHERE date_of_purchase > Convert(datetime, '"+dateString+"' )) GROUP BY movie_id)as A ON Movies.movie_id=A.movie_id ) ORDER BY total_for_sale DESC";
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
 })
 
@@ -46,7 +46,7 @@ router.get('/newMovies', function (req,res) {
     var weekAgoDate = new Date();
     weekAgoDate.setDate(currentDay - 7);
     var dateString = dateFormat(weekAgoDate,"yyyy-mm-dd");
-    var query = "SELECT * FROM Movies WHERE added_date > Convert(datetime, '"+dateString+"' )";
+    var query = "SELECT movie_id, name, price_dollars, rank, added_date FROM Movies WHERE added_date > Convert(datetime, '"+dateString+"' )";
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
 });
 
