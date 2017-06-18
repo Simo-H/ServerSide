@@ -82,10 +82,7 @@ exports.addNewOrder= function (client_id, order_id, date_of_purchase, date_of_sh
 exports.Select = function (query) {
     // Read all rows from table
 // Attempt to connect and execute queries if connection goes through
-if(query == "SELECT order_id FROM Orders WHERE order_id=(SELECT max(order_id) FROM Orders)")
-    console.log("1")
     return new Promise(function (resolve, reject) {
-        console.log("2");
         var connection = new Connection(config);
         connection.on('connect', function (err) {
             if (err) {
