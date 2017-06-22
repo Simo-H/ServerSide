@@ -12,7 +12,7 @@ router.post('/addOrder', function (req, res) {
     var movie;
     var promisesArray = []
     for (var i = 0; i < req.body.movies.length; i++) {
-        promisesArray.push(serverUtils.checkQuantity(req.body.movies[i].movie_id, req.body.movies[i].quantity_for_sale));
+        promisesArray.push(serverUtils.checkQuantity(req.body.movies[i].movie_id, req.body.movies[i].amount));
     }
     Promise.all(promisesArray)
         .then(serverUtils.CheckForNextOrderID)
@@ -25,11 +25,11 @@ router.post('/addOrder', function (req, res) {
 
             for (var i = 0; i < req.body.movies.length; i++)
             {
-                serverUtils.addNewOrderLine(count,req.body.movies[i].movie_id,req.body.movies[i].quantity_for_sale,req.body.movies[i].price_dollar,req);
-               serverUtils.updateStock(req.body.movies[i].movie_id,req.body.movies[i].quantity_for_sale);
+                serverUtils.addNewOrderLine(count,req.body.movies[i].movie_id,req.body.movies[i].amount,req.body.movies[i].price_dollars,req);
+               serverUtils.updateStock(req.body.movies[i].movie_id,req.body.movies[i].amount);
 
             }
-        }).then(function (value) {res.send({message: 'Successfully ordered'});})
+        }).then(function (value) {res.send(JSON.stringify(count));})
     .catch(function (error) { res.send(error); console.log(err)})
 });
 
@@ -48,6 +48,12 @@ router.get('/previousOrders', function (req, res) {
     var query = "SELECT order_id,date_of_purchase,date_of_shipment,total_cost_dollar FROM Orders Where Orders.client_id="+req.query.client_id
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
 });
+
+router.get('/getOrder', function (req, res) {
+    var query= "SELECT * FROM Orders Where Orders.order_id="+req.query.order_id
+    serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) { res.send(error); console.log(err)})
+});
+
 
 
 module.exports = router;
