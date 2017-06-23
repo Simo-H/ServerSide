@@ -31,7 +31,7 @@ exports.countAvailableMovies = function (value,count,movie,callback) {
 exports.checkQuantity = function (movie_id,quantity)
 {
 
-        var query = "SELECT movie_id, quantity_in_stock FROM Movies WHERE movie_id="+movie_id+" AND quantity_in_stock <"+ quantity;
+        var query = "SELECT movie_id, quantity_in_stock,name FROM Movies WHERE movie_id="+movie_id+" AND quantity_in_stock <"+ quantity;
         var a = this.SelectQ(query);
         return a;
 
@@ -349,9 +349,17 @@ exports.SelectQ = function (query) {
             request.on('requestCompleted',function () {
                 RSJSON = [];
 
+                // RS.forEach(function (x) {
+                //     RSJSON.push(JSON.stringify(x));
+                // })
+
+
                 RS.forEach(function (x) {
-                    RSJSON.push(JSON.stringify(x));
+                    // RSJSON.push(JSON.stringify(x));
+                    RSJSON.push(x);
                 })
+
+
 
                 if (RS.length==0){
                     resolve({ message: 'Successfully order' });
