@@ -297,7 +297,6 @@ exports.InsertClient = function (query ,req) {
             request.addParameter('address', TYPES.NVarChar,req.body['address'] );
             request.addParameter('phone_number', TYPES.NVarChar,req.body['phone_number'] );
             request.addParameter('email_address', TYPES.NVarChar	,req.body['email_address'] );
-            request.addParameter('credit_card', TYPES.NVarChar,req.body['credit_card'] );
             request.addParameter('security_answer', TYPES.NVarChar,req.body['security_answer'] );
             request.addParameter('favourite_catergory', TYPES.NVarChar,req.body['favourite_catergory'] );
             request.addParameter('favourite_catergory2', TYPES.NVarChar,req.body['favourite_catergory2'] );

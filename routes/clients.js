@@ -72,7 +72,7 @@ router.delete('/deleteClient', function (req, res) {
 
 router.post('/addClient', function (req, res) {
 
-    var query ="INSERT INTO Clients (client_id, first_name, last_name, address, phone_number, email_address, credit_card, security_answer, favourite_catergory, password, country, favourite_catergory2, username) VALUES (@client_id, @first_name, @last_name, @address, @phone_number, @email_address, @credit_card, @security_answer, @favourite_catergory, @password, @country, @favourite_catergory2, @username)"
+    var query ="INSERT INTO Clients (client_id, first_name, last_name, address, phone_number, email_address, security_answer, favourite_catergory, password, country, favourite_catergory2, username) VALUES (@client_id, @first_name, @last_name, @address, @phone_number, @email_address, @security_answer, @favourite_catergory, @password, @country, @favourite_catergory2, @username)"
 
     serverUtils.InsertClient(query, req).then(function (value) {res.send(value);}).catch(function (error) {console.log(error);res.send(error)})
 });
