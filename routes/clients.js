@@ -86,4 +86,9 @@ router.get('/recomendation', function (req, res) {
     var query= "SELECT Movies.name,Movies.movie_id FROM Movies WHERE Movies.category= (SELECT TOP 1 favourite_catergory From Clients WHERE client_id='"+req.query.client_id+"')"
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(error);res.send(error)})
 });
+
+router.get('/restorePassword', function (req, res) {
+    var query= "SELECT password FROM Clients WHERE username= '"+req.query.username+"' AND security_answer='"+req.query.security_answer+"'";
+    serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(error);res.send(error)})
+});
 module.exports = router;
