@@ -74,7 +74,10 @@ router.post('/addClient', function (req, res) {
 
     var query ="INSERT INTO Clients (client_id, first_name, last_name, address, phone_number, email_address, security_answer, favourite_catergory, password, country, favourite_catergory2, username) VALUES (@client_id, @first_name, @last_name, @address, @phone_number, @email_address, @security_answer, @favourite_catergory, @password, @country, @favourite_catergory2, @username)"
 
-    serverUtils.InsertClient(query, req).then(function (value) {res.send(value);}).catch(function (error) {console.log(error);res.send(error)})
+    serverUtils.InsertClient(query, req).then(function (value) {res.send(value);})
+        .catch(function (error)
+        // {console.log(error);res.send(value)})
+        {res.status(400).send("Oh uh, something went wrong");})
 });
 
 router.get('/getClientDetails', function (req, res) {

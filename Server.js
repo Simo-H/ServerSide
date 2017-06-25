@@ -282,11 +282,13 @@ exports.InsertClient = function (query ,req) {
                 query,
                 function (err) {
                     if (err) {
-                        console.log(err);
+                       // console.log(err);
                         reject(err.message);
                         //return callback(err);
                     }
-                    resolve({ message: 'Successfully insert' });
+                    else {
+                        resolve({message: 'Successfully insert'});
+                    }
 
                 });
 
