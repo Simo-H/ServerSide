@@ -19,7 +19,7 @@ router.post('/addOrder', function (req, res) {
         .then(serverUtils.nextOrderId)
         .then(function (value) {
             count = value;
-            var a=serverUtils.addNewOrder(req.body.client_id, value, req.body.date_of_purchase, req.body.date_of_shipment, req.body.total_cost_dollar, req)
+            var a=serverUtils.addNewOrder(req.body.token, value, req.body.date_of_purchase, req.body.date_of_shipment, req.body.total_cost_dollar, req)
         })
         .then(function () {
 

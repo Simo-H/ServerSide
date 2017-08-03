@@ -71,9 +71,9 @@ exports.addNewOrderLine = function (order_id,movie_id,quantity_for_sale,price_do
     return a;
 }
 
-exports.addNewOrder= function (client_id, order_id, date_of_purchase, date_of_shipment,total_cost_dollar,req)
+exports.addNewOrder= function (token, order_id, date_of_purchase, date_of_shipment,total_cost_dollar,req)
 {
-        var query = "INSERT INTO Orders (client_id, order_id, date_of_purchase, date_of_shipment,total_cost_dollar) VALUES (" + client_id + "," + order_id + ", '" + date_of_purchase + "','" + date_of_shipment + "'," + total_cost_dollar + ")"
+        var query = "INSERT INTO Orders (client_id, order_id, date_of_purchase, date_of_shipment,total_cost_dollar) VALUES (" + "(SELECT client_id FROM Clients WHERE token="+token +")" + "," + order_id + ", '" + date_of_purchase + "','" + date_of_shipment + "'," + total_cost_dollar + ")"
         var a = this.Insert(query,req)
         return a;
 
