@@ -13,7 +13,7 @@ router.post('/login', function (req, res) {
     var randomToken= Math.floor(Math.random() * (100000 - 1000) + 1000);
     var insertToken="UPDATE Clients SET token = "+randomToken+ "WHERE username = '"+ req.body['username']+"' AND password = '"+req.body['password']+"';";
     var query= "SELECT first_name, last_name,username, token,favourite_catergory,favourite_catergory2 FROM Clients WHERE username = '"+ req.body['username'] +"' AND password = '"+req.body['password']+"'";
-    serverUtils.Select(query).then(serverUtils.Update(insertToken)).then(function (value) {value[0].token = randomToken;console.log(value);res.send(value);}).catch(function (error) {  console.log(error);res.send(error)})
+    serverUtils.Select(query).then(serverUtils.Update(insertToken)).then(function (value) {if(undefined =! value){value[0].token = randomToken};console.log(value);res.send(value);}).catch(function (error) {  console.log(error);res.send(error)})
 });
 
 router.post('/restorePassword', function (req, res) {
