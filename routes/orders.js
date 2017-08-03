@@ -45,7 +45,7 @@ router.get('/OrderDetails', function (req, res) {
 });
 
 router.get('/previousOrders', function (req, res) {
-    var query = "SELECT order_id,date_of_purchase,date_of_shipment,total_cost_dollar FROM Orders Where Orders.client_id="+req.query.client_id
+    var query = "SELECT order_id,date_of_purchase,date_of_shipment,total_cost_dollar FROM Orders Where Orders.client_id= (SELECT client_id FROM Clients WHERE token="+req.query.token+")"
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
 });
 
