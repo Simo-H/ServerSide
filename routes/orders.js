@@ -10,7 +10,7 @@ var dateFormat = require('dateformat');
 router.post('/addOrder', function (req, res) {
     var count = 0;
     var movie;
-    var promisesArray = []
+    var promisesArray = [];
     for (var i = 0; i < req.body.movies.length; i++) {
         promisesArray.push(serverUtils.checkQuantity(req.body.movies[i].movie_id, req.body.movies[i].amount));
     }

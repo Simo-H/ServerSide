@@ -55,6 +55,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+app.on('error',function(err){ console.error(err)})
 module.exports = app;
 
 
