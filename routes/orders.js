@@ -23,7 +23,7 @@ router.use(function (err,req,res,next) {
 });
 
 router.post('/addOrder', function (req, res) {
-    if(app.checkLogin(req))
+    if(!app.checkLogin(req))
     {
         res.send("No access - please log in");
         return;
@@ -60,6 +60,11 @@ router.get('/ordersReport', function (req, res) {
 });
 
 router.get('/OrderDetails', function (req, res) {
+    if(app.checkLogin(req))
+    {
+        res.send("No access - please log in");
+        return;
+    }
     var query = "SELECT Movies.name,Movies.movie_id,A.quantity_for_sale,A.price_dollar FROM Movies INNER JOIN (SELECT * FROM Order_Line WHERE Order_Line.order_id="+req.query.order_id+")as A ON Movies.movie_id=A.movie_id"
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
 });
