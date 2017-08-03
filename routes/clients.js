@@ -10,8 +10,10 @@ var dateFormat = require('dateformat');
 /* GET home page. */
 
 router.post('/login', function (req, res) {
-    var query= "SELECT first_name, last_name,username,client_id,favourite_catergory,favourite_catergory2 FROM Clients WHERE username = '"+ req.body['username'] +"' AND password = '"+req.body['password']+"'";
-    serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(error);res.send(error)})
+    var randomToken= Math.floor(Math.random() * (100000 - 1000) + 1000);
+    var insertToken="UPDATE Clients SET token = "+randomToken+ "WHERE username = '"+ req.body['username']+"' AND password = '"+req.body['password']+"';";
+    var query= "SELECT first_name, last_name,username,token,favourite_catergory,favourite_catergory2 FROM Clients WHERE username = '"+ req.body['username'] +"' AND password = '"+req.body['password']+"'";
+    serverUtils.Update(insertToken).then (function(){serverUtils.Select(query)}).then(function (value) {res.send(value);}).catch(function (error) {  console.log(error);res.send(error)})
 });
 
 router.post('/restorePassword', function (req, res) {
