@@ -15,7 +15,28 @@ var app = express();
 // view engine setup
 // app.set('views', path.join(__dirname, 'views'));
 // app.set('view engine', 'jade');
+app.locals.token = {};
+var query = "SELECT username,token FROM Clients WHERE token IS NOT NULL";
+serverUtils.Select(query).then(function (value)
+{for(var i = 0;i < value.length;i++ )
+{
+    app.locals.token[value[i].username] = value[i].token;
+}});
+exports.addToDictionary = function (username,token) {
+    app.locals.token[username] = token;
+}
 
+exports.checkLogin = function (req) {
+    var token = req.headers["token"];
+    var user = req.headers["username"];
+    if (!token || !user)
+        return false;
+    var validToken = app.locals.token[user];
+    if (validToken == token)
+        return true;
+    else
+        return false;
+}
 // uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));

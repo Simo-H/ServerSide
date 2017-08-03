@@ -75,4 +75,16 @@ router.put('/updateMovieQuantity', function (req, res) {
     serverUtils.Update(query, req).then(function (value) {res.send(value);}).catch(function (error) {console.log(err);res.send(error)})
 });
 
+function checkLogin(req) {
+    var token = req.headers["token"];
+    var user = req.headers["user"];
+    if (!token || !user)
+        return false;
+    var validToken = app.locals.users[user];
+    if (validToken == token)
+        return true;
+    else
+        return false;
+}
+
 module.exports = router;
