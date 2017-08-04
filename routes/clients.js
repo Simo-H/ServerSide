@@ -85,6 +85,11 @@ router.post('/addClient', function (req, res) {
 });
 
 router.get('/getClientDetails', function (req, res) {
+    if(!app.checkLogin(req))
+    {
+        res.send("No access - please log in");
+        return;
+    }
     var query= "SELECT * FROM Clients WHERE client_id = '"+ req.query.client_id+"'";
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(error);res.send(error)})
 });

@@ -60,7 +60,7 @@ router.get('/ordersReport', function (req, res) {
 });
 
 router.get('/OrderDetails', function (req, res) {
-    if(app.checkLogin(req))
+    if(!app.checkLogin(req))
     {
         res.send("No access - please log in");
         return;
@@ -70,11 +70,21 @@ router.get('/OrderDetails', function (req, res) {
 });
 
 router.get('/previousOrders', function (req, res) {
+    if(!app.checkLogin(req))
+    {
+        res.send("No access - please log in");
+        return;
+    }
     var query = "SELECT order_id,date_of_purchase,date_of_shipment,total_cost_dollar FROM Orders Where Orders.client_id= (SELECT client_id FROM Clients WHERE token="+req.headers["token"]+")"
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) {  console.log(err);res.send(error)})
 });
 
 router.get('/getOrder', function (req, res) {
+    if(!app.checkLogin(req))
+    {
+        res.send("No access - please log in");
+        return;
+    }
     var query= "SELECT * FROM Orders Where Orders.order_id="+req.query.order_id
     serverUtils.Select(query).then(function (value) {res.send(value);}).catch(function (error) { res.send(error); console.log(err)})
 });
