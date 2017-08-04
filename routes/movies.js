@@ -47,11 +47,6 @@ router.get('/bestFive', function (req,res) {
 })
 
 router.get('/newMovies', function (req,res) {
-    if(app.checkLogin(req))
-    {
-        res.send("No access - please log in");
-        return;
-    }
     var date = new Date();
     var currentDay = date.getDate();
     var weekAgoDate = new Date();

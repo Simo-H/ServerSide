@@ -8,20 +8,6 @@ var dateFormat = require('dateformat');
 var app = require('../app');
 
 
-router.use(function (err,req,res,next) {
-    var user = req.headers["username"];
-    var token = req.headers["token"];
-    console.log("test");
-    if (!token || !user)
-        res.status(403).send("Please log in to perform this action.");
-    serverUtils.Select("SELECT username From Clients WHERE username = '"+user+"' AND token =" + token).then(function (value)
-    { if(value.length > 0)
-        next();
-    else
-        res.status(403).send("Please log in to perform this action.");
-    });
-});
-
 router.post('/addOrder', function (req, res) {
     if(!app.checkLogin(req))
     {
